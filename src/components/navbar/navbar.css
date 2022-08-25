@@ -1,0 +1,28 @@
+.navbar .container {
+    padding-top: 20px;
+}
+
+.navbar{
+    background-color: var(--background-color);
+}
+
+.navbar-brand img {
+    width: 200px;
+
+}
+
+.navbar-brand {
+    position: relative;
+}
+
+.navbar-brand::before {
+    content: "video";
+    position: absolute;
+    margin-left: 60px;
+    margin-top: 20px;
+    color: var(--title-color);
+}
+
+.slogan {
+    font-size: var(--title-sz);
+}

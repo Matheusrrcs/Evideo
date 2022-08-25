@@ -1,0 +1,33 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --background-color: #21242b;
+    --dark-color:#191a1f;
+    --midle-color:#1d1e25;
+    --text-color: #84878e;
+    --title-color: #fdfbf8;
+    --title-sz: 32px;
+    --button-color: #0eb662;
+    --user-color:#2982f4;
+    --subtitle-sz: 24px;
+    --box-shadow:0px 2px 14px 5px rgba(0,0,0,0.59);
+
+}
+
+
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--title-color);
+    font-family: 'Inter', sans-serif;
+
+}
