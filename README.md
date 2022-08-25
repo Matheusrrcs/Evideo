@@ -30,7 +30,7 @@ npm install
 
 ### 4. Rode o servidor:
 ```sh
-npm server
+npm run-script server
 ```
 
 ### 5. Inicie a aplicação:
