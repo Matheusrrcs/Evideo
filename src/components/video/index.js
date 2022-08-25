@@ -15,8 +15,9 @@ function Video({ socket, room }) {
 
     const [playPause, setPlayPause] = useState(false);
 
+    //envia os dados do video procurado
     const sendVideo = async () => {
-        // verifica se tem alguma message
+        // verifica se tem algum link
 
         if (linkVideo !== "") {
 
@@ -35,6 +36,7 @@ function Video({ socket, room }) {
         }
     }
 
+    //envia os dados de play no video
     const playVideo = async () => {
 
 
@@ -47,6 +49,7 @@ function Video({ socket, room }) {
 
     }
 
+    //envia os dados de pause no video
     const pauseVideo = async () => {
 
 
@@ -58,6 +61,8 @@ function Video({ socket, room }) {
         await socket.emit("pause_video", pauseData);
 
     }
+
+    // envia os dados de progresso do video
     const progress = async (state) => {
 
         const progressData = {
@@ -72,23 +77,26 @@ function Video({ socket, room }) {
 
     useEffect(() => {
 
-        //evento que pega as informações da mensagem do backend
+        //evento que pega as informações da mensagem do chat
         socket.on("recive_video", (data) => {
             setDnone("d-none")
             setLink(data.link)
 
         })
 
+        //evento que pega as informações de pause do video
         socket.on("recive_pause", (data) => {
             setPlayPause(data.pause)
 
         })
 
+        //evento que pega as informações de play do video
         socket.on("recive_play", (data) => {
             setPlayPause(data.play)
 
         })
 
+        //evento que pega as informações do progresso do video  
         socket.on("recive_progress", (data) => {
             setProgressVideo(data.progress)
 

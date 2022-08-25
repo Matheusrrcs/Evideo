@@ -89,3 +89,13 @@
 
     border-radius: 15px 15px 15px 0;
 }
+
+
+@media (max-width: 991px) {
+    .chat {
+
+    z-index: 0;
+    
+    }
+    
+}
