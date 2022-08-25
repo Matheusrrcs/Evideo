@@ -10,7 +10,7 @@ import { io } from 'socket.io-client';
 function App() {
 
   //estabelece conexão com o socket
-  const socket = io.connect("http://localhost:3001");
+  const socket = io.connect("http://https://evideos.herokuapp.com/");
   
   return (
 
