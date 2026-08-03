@@ -1,0 +1,74 @@
+name: Build Treino da Bine v4
+
+on:
+  push:
+    branches:
+      - chatgpt/treino-bine-v4-midias
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: treino-bine-v4
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Preparar Android SDK
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Baixar bancos de mídias autorizados
+        run: |
+          mkdir -p .cache
+          git clone --depth 1 https://github.com/yuhonas/free-exercise-db.git .cache/free-exercise-db
+          git clone --depth 1 https://github.com/arhxam/free-exercise-db-with-videos.git .cache/free-exercise-db-with-videos
+
+      - name: Gerar interface e incorporar fotos e vídeos
+        run: |
+          python3 scripts/write_index.py
+          python3 scripts/download_media.py
+          test -s app/src/main/assets/index.html
+          test -s app/src/main/assets/media-map.js
+          find app/src/main/assets/media -type f -maxdepth 1 -printf '%f %s bytes\n' | sort
+
+      - name: Compilar APK instalável
+        run: gradle --no-daemon --stacktrace :app:assembleDebug
+
+      - name: Validar assinatura e estrutura
+        run: |
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+          cp "$APK" Treino_da_Bine_v4_Midias_Reais.apk
+          sha256sum Treino_da_Bine_v4_Midias_Reais.apk > SHA256.txt
+          unzip -t Treino_da_Bine_v4_Midias_Reais.apk
+
+      - name: Disponibilizar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Treino-da-Bine-v4-APK
+          path: |
+            treino-bine-v4/Treino_da_Bine_v4_Midias_Reais.apk
+            treino-bine-v4/SHA256.txt
+          if-no-files-found: error
+          retention-days: 30
