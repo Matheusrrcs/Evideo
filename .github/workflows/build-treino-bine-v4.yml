@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - chatgpt/treino-bine-v4-midias
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
