@@ -35,6 +35,9 @@ jobs:
         with:
           gradle-version: '8.10.2'
 
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Preparar Android SDK
         run: |
           yes | sdkmanager --licenses >/dev/null || true
