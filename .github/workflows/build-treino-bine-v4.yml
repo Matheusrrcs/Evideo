@@ -1,9 +1,9 @@
-name: Build Treino da Bine v4
+name: Build Treino da Bine v5
 
 on:
   push:
     branches:
-      - chatgpt/treino-bine-v4-midias
+      - chatgpt/treino-bine-v5-gestao-dados
   pull_request:
     branches:
       - main
@@ -49,12 +49,17 @@ jobs:
           git clone --depth 1 https://github.com/yuhonas/free-exercise-db.git .cache/free-exercise-db
           git clone --depth 1 https://github.com/arhxam/free-exercise-db-with-videos.git .cache/free-exercise-db-with-videos
 
-      - name: Gerar interface e incorporar fotos e vídeos
+      - name: Gerar versão v5 e incorporar mídias
         run: |
-          python3 scripts/write_index.py
+          python3 scripts/apply_v5.py
+          python3 scripts/patch_v5.py
           python3 scripts/download_media.py
           test -s app/src/main/assets/index.html
           test -s app/src/main/assets/media-map.js
+          grep -q "Excluir selecionados" app/src/main/assets/index.html
+          grep -q "pickMedia" app/src/main/java/br/com/treinodabine/MainActivity.java
+          grep -q "exportBackup" app/src/main/java/br/com/treinodabine/MainActivity.java
+          grep -q "versionCode 5" app/build.gradle
           find app/src/main/assets/media -type f -maxdepth 1 -printf '%f %s bytes\n' | sort
 
       - name: Compilar APK instalável
@@ -65,16 +70,16 @@ jobs:
           APK="app/build/outputs/apk/debug/app-debug.apk"
           test -s "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
-          cp "$APK" Treino_da_Bine_v4_Midias_Reais.apk
-          sha256sum Treino_da_Bine_v4_Midias_Reais.apk > SHA256.txt
-          unzip -t Treino_da_Bine_v4_Midias_Reais.apk
+          cp "$APK" Treino_da_Bine_v5_Gestao_e_Backup.apk
+          sha256sum Treino_da_Bine_v5_Gestao_e_Backup.apk > SHA256.txt
+          unzip -t Treino_da_Bine_v5_Gestao_e_Backup.apk
 
       - name: Disponibilizar APK
         uses: actions/upload-artifact@v4
         with:
-          name: Treino-da-Bine-v4-APK
+          name: Treino-da-Bine-v5-APK
           path: |
-            treino-bine-v4/Treino_da_Bine_v4_Midias_Reais.apk
+            treino-bine-v4/Treino_da_Bine_v5_Gestao_e_Backup.apk
             treino-bine-v4/SHA256.txt
           if-no-files-found: error
           retention-days: 30
